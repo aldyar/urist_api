@@ -4,11 +4,12 @@ from openai import AsyncOpenAI
 import time
 from config import AI_TOKEN ,PROXY
 import httpx
-from function.requests import Database
+from api.function.requests import Database
 import tiktoken
 import numpy as np
 from numpy.linalg import norm
 from database.models import async_session
+from pprint import pprint
 
 proxy_url = PROXY
 
@@ -120,10 +121,11 @@ class Embeddings:
         ]
         openai_start = time.time()
         response = await client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model=config.gpt_model,
             messages=messages,
             temperature=0.2
         )
+        pprint(f'RESPONSE:____________{response}')
         openai_time = time.time() - openai_start
         response_text =  response.choices[0].message.content
         try:

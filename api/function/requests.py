@@ -6,6 +6,7 @@ from datetime import datetime,timedelta
 from sqlalchemy import and_,func
 from database.storage import chat_histories
 import asyncio
+import requests
 
 
 def connection(func):
@@ -38,7 +39,7 @@ class Database:
         return config
     
     @connection
-    async def set_chat(session,question,chat_id,value,last_active):
+    async def set_chat(session,question,chat_id,value,last_active,source):
 
 
         chat = Chat(
@@ -46,7 +47,8 @@ class Database:
             chat_id = chat_id,
             value = value,
             last_active = datetime.fromisoformat(last_active),
-            active = False
+            active = False,
+            source = source
         )
         session.add(chat)
         await session.commit()
@@ -67,6 +69,7 @@ class Database:
                     expired.append(chat_id)
 
             for chat_id in expired:
+                
                 del chat_histories[chat_id]
             await asyncio.sleep(10)  # Проверять каждую минуту
 
@@ -85,3 +88,25 @@ class Database:
             session.add(chat)
 
         await session.commit()
+
+    
+    def send_lead_to_crm(phone, message, source: str):
+        url = "https://adv.ltcrm.ru/api/api-leads"
+        token = "2|UnAttmvig4wPGEcblZj6Zt9jNY1sOMccjW0kVmLd"
+
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+
+        data = {
+            "name": "___",
+            "phone": phone,
+            "message": f"{message}",
+            "city": "___",
+            "source": source
+        }
+        print(f'DATA:________{data}')
+        response = requests.post(url, json=data, headers=headers, verify=False)
+        print("Status code:", response.status_code)
+        print("Response body:", response.text)

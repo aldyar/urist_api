@@ -32,6 +32,7 @@ class Chat(Base):
     value: Mapped[str] = mapped_column(String,nullable=True)
     active: Mapped[bool] = mapped_column(Boolean,default=True)
     last_active:Mapped[datetime] = mapped_column(DateTime,nullable=True)
+    source: Mapped[datetime] = mapped_column(String,nullable=True)
 
 
 async def async_main():

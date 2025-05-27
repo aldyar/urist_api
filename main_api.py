@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from routes.routes import router as main_router
+from api.routes.routes import router as main_router
 from database.models import async_main
 import asyncio
-from function.requests import Database
+from api.function.requests import Database
 
 app = FastAPI()
 
@@ -15,4 +15,4 @@ async def on_startup():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
+    uvicorn.run("main_api:app", host="0.0.0.0", port=5000, reload=True)
